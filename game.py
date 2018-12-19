@@ -1,6 +1,5 @@
 import sys
 import random
-
 import pygame
 
 pygame.init()
@@ -93,18 +92,24 @@ while not game_over:
         if event.type == pygame.QUIT:
             sys.exit()
 
-        if event.type == pygame.KEYDOWN:
-            x = player_pos[0]
-            y = player_pos[1]
-            if event.key == pygame.K_LEFT:
-                x -= 25
-            elif event.key == pygame.K_RIGHT:
-                x += 25
-            elif event.key == pygame.K_DOWN:
-                y += 25
-            elif event.key == pygame.K_UP:
-                y -= 25
-            player_pos = [x, y]
+    x = player_pos[0]
+    y = player_pos[1]
+
+    keys_pressed = pygame.key.get_pressed()
+
+    if keys_pressed[pygame.K_LEFT]:
+        x -= 10
+
+    if keys_pressed[pygame.K_RIGHT]:
+        x += 10
+
+    if keys_pressed[pygame.K_UP]:
+        y -= 10
+
+    if keys_pressed[pygame.K_DOWN]:
+        y += 10
+
+    player_pos = [x, y]
 
     screen.fill(BACKGROUND_COLOR)
 
@@ -117,11 +122,11 @@ while not game_over:
 
     if collision_check(enemy_list, player_pos):
         game_over = True
-        break
+
     draw_enemies(enemy_list)
 
     pygame.draw.rect(screen, RED, (player_pos[0], player_pos[1], player_size, player_size))
 
-    clock.tick(30)
+    clock.tick(45)
 
     pygame.display.update()
