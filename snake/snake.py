@@ -7,6 +7,9 @@ import pygame
 
 pygame.init()
 
+RED = (255, 0, 0)
+WHITE = (255, 255, 255)
+STARTING_POSITION = (10, 10)
 size = 500
 rows = 20
 
@@ -59,8 +62,8 @@ def drawGrid(gridSize, numRows, surface):
         x = x + blockSize
         y = y + blockSize
 
-        pygame.draw.line(surface, (255, 255, 255), (x, 0), (x, gridSize))
-        pygame.draw.line(surface, (255, 255, 255), (0, y), (gridSize, y))
+        pygame.draw.line(surface, WHITE, (x, 0), (x, gridSize))
+        pygame.draw.line(surface, WHITE, (0, y), (gridSize, y))
 
 
 def redrawWindow(surface):
@@ -78,7 +81,7 @@ def messageBox(subject, contect):
 
 def main():
     window = pygame.display.set_mode((size, size))
-    snake = Snake((255, 0, 0), (10, 10))
+    snake = Snake(RED, STARTING_POSITION)
     flag = True
 
     clock = pygame.time.Clock()
