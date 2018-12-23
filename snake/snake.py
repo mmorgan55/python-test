@@ -10,7 +10,9 @@ pygame.init()
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+GREEN = (0, 255, 0)
 STARTING_POSITION = (10, 10)
+
 size = 500
 rows = 20
 
@@ -105,7 +107,20 @@ class Snake(object):
         pass
 
     def addCube(self):
-        pass
+        tail = self.body[-1]
+        dx, dy = tail.dirX, tail.dirY
+
+        if dx == 1 and dy == 0:
+            self.body.append(Cube((tail.pos[0] - 1, tail.pos[1])))
+        elif dx == -1 and dy == 0:
+            self.body.append(Cube((tail.pos[0] + 1, tail.pos[1])))
+        elif dx == 0 and dy == 1:
+            self.body.append(Cube((tail.pos[0], tail.pos[1] - 1)))
+        elif dx == 0 and dy == -1:
+            self.body.append(Cube((tail.pos[0], tail.pos[1] + 1)))
+
+        self.body[-1].dirX = dx
+        self.body[-1].dirY = dy
 
     def draw(self, surface):
         for index, cube in enumerate(self.body):
@@ -133,15 +148,26 @@ def drawGrid(gridSize, numRows, surface):
 
 
 def redrawWindow(surface):
+    global snack
     surface.fill(BLACK)
     snake.draw(surface)
+    snack.draw(surface)
     drawGrid(size, rows, surface)
     pygame.display.update()
 
 
 def randomSnack(rows, snake):
-    pass
+    positions = snake.body
 
+    while True:
+        x = random.randrange(rows)
+        y = random.randrange(rows)
+        if len(list(filter(lambda z: z.pos == (x, y), positions))) > 0:
+            continue
+        else:
+            break
+
+    return x, y
 
 
 def messageBox(subject, contect):
@@ -149,8 +175,10 @@ def messageBox(subject, contect):
 
 
 def main():
+    global snack
     window = pygame.display.set_mode((size, size))
     flag = True
+    snack = Cube(randomSnack(rows, snake), color=GREEN)
 
     clock = pygame.time.Clock()
     while flag:
@@ -162,7 +190,12 @@ def main():
         pygame.time.delay(50)
         clock.tick(10)
         snake.move()
+        if snake.body[0].pos == snack.pos:
+            snake.addCube()
+            snack = Cube(randomSnack(rows, snake), color=GREEN)
         redrawWindow(window)
 
+
+snack = Cube(randomSnack(rows, snake), color=GREEN)
 
 main()
