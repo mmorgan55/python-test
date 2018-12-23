@@ -18,11 +18,16 @@ class Cube(object):
     rows = 0
     cubeSize = 0
 
-    def __init__(self, start, dirX=1, dirY=0, color=(255, 0, 0)):
-        pass
+    def __init__(self, start, dirX=1, dirY=0, color=RED):
+        self.pos = start
+        self.dirX = 1
+        self.dirY = 0
+        self.color = color
 
     def move(self, dirX, dirY):
-        pass
+        self.dirX = dirX
+        self.dirY = dirY
+        self.pos(self.pos[0] + self.dirX, self.pos[1] + self.dirY)
 
     def draw(self, surface, eyes=False):
         pass
@@ -40,7 +45,49 @@ class Snake(object):
         self.dirY = 1
 
     def move(self):
-        pass
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+            keys = pygame.key.get_pressed()
+
+            for key in keys:
+                if key[pygame.K_LEFT]:
+                    self.dirX = -1
+                    self.dirY = 0
+                    self.turns[self.head.pos[:]] = [self.dirX, self.dirY]
+                elif key[pygame.K_RIGHT]:
+                    self.dirX = 1
+                    self.dirY = 0
+                    self.turns[self.head.pos[:]] = [self.dirX, self.dirY]
+
+                elif key[pygame.K_UP]:
+                    self.dirX = 0
+                    self.dirY = -1
+                    self.turns[self.head.pos[:]] = [self.dirX, self.dirY]
+                elif key[pygame.K_DOWN]:
+                    self.dirX = 0
+                    self.dirY = 1
+                    self.turns[self.head.pos[:]] = [self.dirX, self.dirY]
+
+            for index, cube in enumerate(self.body):
+                position = cube.pos[:]
+                if position in self.turns:
+                    turn = self.turns[position]
+                    cube.move(turn[0], turn[1])
+                    if index == len(self.body) - 1:
+                        self.turns.pop(position)
+                else:
+                    if cube.dirX == -1 and cube.pos[0] <= 0:
+                        cube.pos = (cube.rows - 1, cube.pos[1])
+                    elif cube.dirX == 1 and cube.pos[0] >= cube.rows - 1:
+                        cube.pos = (0, cube.pos[1])
+                    elif cube.dirY == 1 and cube.pos[1] >= cube.rows - 1:
+                        cube.pos = (cube.pos[0], 0)
+                    elif cube.dirY == -1 and cube.pos[1] <= 0:
+                        cube.pos = (cube.pos[0], cube.rows - 1)
+                    else:
+                        cube.move(cube.dirX, cube.dirY)
 
     def reset(self, pos):
         pass
@@ -49,7 +96,14 @@ class Snake(object):
         pass
 
     def draw(self, surface):
-        pass
+        for index, cube in enumerate(self.body):
+            if index == 0:
+                cube.draw(surface, True)
+            else:
+                cube.draw(surface)
+
+
+snake = Snake(RED, STARTING_POSITION)
 
 
 def drawGrid(gridSize, numRows, surface):
@@ -67,6 +121,7 @@ def drawGrid(gridSize, numRows, surface):
 
 
 def redrawWindow(surface):
+    snake.draw(surface)
     drawGrid(size, rows, surface)
     pygame.display.update()
 
@@ -81,7 +136,6 @@ def messageBox(subject, contect):
 
 def main():
     window = pygame.display.set_mode((size, size))
-    snake = Snake(RED, STARTING_POSITION)
     flag = True
 
     clock = pygame.time.Clock()
