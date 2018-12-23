@@ -22,6 +22,8 @@ class Cube(object):
     cubeSize = 500
 
     def __init__(self, start, dirX=1, dirY=0, color=RED):
+        self.dirX = dirX
+        self.dirY = dirY
         self.pos = start
         self.dirX = 1
         self.dirY = 0
@@ -59,9 +61,6 @@ class Snake(object):
         self.dirY = 1
 
     def move(self):
-        # for event in pygame.event.get():
-        #     if event.type == pygame.QUIT:
-        #         pygame.quit()
 
         keys = pygame.key.get_pressed()
 
@@ -104,7 +103,12 @@ class Snake(object):
                     cube.move(cube.dirX, cube.dirY)
 
     def reset(self, pos):
-        pass
+        self.head = Cube(pos)
+        self.body = []
+        self.body.append(self.head)
+        self.turns = {}
+        self.dirX = 0
+        self.dirY = 1
 
     def addCube(self):
         tail = self.body[-1]
@@ -170,8 +174,15 @@ def randomSnack(rows, snake):
     return x, y
 
 
-def messageBox(subject, contect):
-    pass
+def messageBox(subject, content):
+    root = tk.Tk()
+    root.attributes("-topmost", True)
+    root.withdraw()
+    messagebox.showinfo(subject, content)
+    try:
+        root.destroy()
+    except IOError:
+        pass
 
 
 def main():
@@ -193,6 +204,13 @@ def main():
         if snake.body[0].pos == snack.pos:
             snake.addCube()
             snack = Cube(randomSnack(rows, snake), color=GREEN)
+
+        for x in range(len(snake.body)):
+            if snake.body[x].pos in list(map(lambda z: z.pos, snake.body[x + 1:])):
+                print('Score: ', len(snake.body))
+                messageBox('You Lost!', 'Play again...')
+                snake.reset((10, 10))
+                break
         redrawWindow(window)
 
 
