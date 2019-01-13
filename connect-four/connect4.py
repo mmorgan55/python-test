@@ -34,6 +34,18 @@ def find_win(board, piece):
             if (board[row][col]) == piece and board[row + 1][col] and board[row + 2][col] and board[row + 3][col]:
                 return True
 
+    for col in range(COLUMN_COUNT - 3):
+        for row in range(ROW_COUNT - 3):
+            if (board[row][col]) == piece and board[row + 1][col + 1] and board[row + 2][col + 2] \
+                    and board[row + 3][col + 3]:
+                return True
+
+    for col in range(COLUMN_COUNT - 3):
+        for row in range(3, ROW_COUNT):
+            if (board[row][col]) == piece and board[row - 1][col + 1] and board[row - 2][col + 2] \
+                    and board[row - 3][col + 3]:
+                return True
+
 
 game_board = create_board()
 print(game_board)
@@ -56,6 +68,10 @@ while not game_over:
         if is_valid_move(game_board, column):
             row = get_next_open_row(game_board, column)
             drop_piece(game_board, row, column, 2)
+            
+            if find_win(game_board, 1):
+                print("Worked")
+                game_over = True
 
     print(np.flip(game_board, 0))
 
