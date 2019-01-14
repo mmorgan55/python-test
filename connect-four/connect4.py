@@ -33,24 +33,26 @@ def get_next_open_row(board, col):
 def find_win(board, piece):
     for col in range(COLUMN_COUNT - 3):
         for row in range(ROW_COUNT):
-            if (board[row][col]) == piece and board[row][col + 1] and board[row][col + 2] and board[row][col + 3]:
+            if (board[row][col]) == piece and board[row][col + 1] == piece and board[row][col + 2] == piece and \
+                    board[row][col + 3] == piece:
                 return True
 
     for col in range(COLUMN_COUNT):
         for row in range(ROW_COUNT - 3):
-            if (board[row][col]) == piece and board[row + 1][col] and board[row + 2][col] and board[row + 3][col]:
+            if (board[row][col]) == piece and board[row + 1][col] == piece and board[row + 2][col] == piece and \
+                    board[row + 3][col] == piece:
                 return True
 
     for col in range(COLUMN_COUNT - 3):
         for row in range(ROW_COUNT - 3):
-            if (board[row][col]) == piece and board[row + 1][col + 1] and board[row + 2][col + 2] \
-                    and board[row + 3][col + 3]:
+            if (board[row][col]) == piece and board[row + 1][col + 1] == piece and board[row + 2][col + 2] == piece \
+                    and board[row + 3][col + 3] == piece:
                 return True
 
     for col in range(COLUMN_COUNT - 3):
         for row in range(3, ROW_COUNT):
-            if (board[row][col]) == piece and board[row - 1][col + 1] and board[row - 2][col + 2] \
-                    and board[row - 3][col + 3]:
+            if (board[row][col]) == piece and board[row - 1][col + 1] == piece and board[row - 2][col + 2] == piece \
+                    and board[row - 3][col + 3] == piece:
                 return True
 
 
@@ -101,7 +103,6 @@ while not game_over:
             sys.exit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            print()
 
             if turn == 0:
                 posx = event.pos[0]
