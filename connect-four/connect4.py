@@ -1,11 +1,14 @@
 import numpy as np
 import pygame
 import sys
+import math
 
 COLUMN_COUNT = 7
 ROW_COUNT = 6
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
 
 
 def create_board():
@@ -60,6 +63,18 @@ def draw_board(board):
                                (col * SQUARE_SIZE + SQUARE_SIZE // 2,
                                 row * SQUARE_SIZE + SQUARE_SIZE + SQUARE_SIZE // 2), RADIUS)
 
+    for col in range(COLUMN_COUNT):
+        for row in range(ROW_COUNT):
+            if board[row][col] == 1:
+                pygame.draw.circle(screen, RED,
+                                   (col * SQUARE_SIZE + SQUARE_SIZE // 2,
+                                    height - (row * SQUARE_SIZE + SQUARE_SIZE // 2)), RADIUS)
+            elif board[row][col] == 2:
+                pygame.draw.circle(screen, YELLOW,
+                                   (col * SQUARE_SIZE + SQUARE_SIZE // 2,
+                                    height - (row * SQUARE_SIZE + SQUARE_SIZE // 2)), RADIUS)
+    pygame.display.update()
+
 
 game_board = create_board()
 print(game_board)
@@ -88,27 +103,29 @@ while not game_over:
         if event.type == pygame.MOUSEBUTTONDOWN:
             print()
 
-    # if turn == 0:
-    #     column = int(input("Player 1 Make your Selection (0-6):"))
-    #     if is_valid_move(game_board, column):
-    #         row = get_next_open_row(game_board, column)
-    #         drop_piece(game_board, row, column, 1)
-    #
-    #         if find_win(game_board, 1):
-    #             print("Worked")
-    #             game_over = True
-    #
-    # else:
-    #     column = int(input("Player 2 Make your Selection (0-6):"))
-    #     if is_valid_move(game_board, column):
-    #         row = get_next_open_row(game_board, column)
-    #         drop_piece(game_board, row, column, 2)
-    #
-    #         if find_win(game_board, 1):
-    #             print("Worked")
-    #             game_over = True
-    #
-    # print(np.flip(game_board, 0))
-    #
-    # turn += 1
-    # turn = turn % 2
+            if turn == 0:
+                posx = event.pos[0]
+                column = math.floor(posx // SQUARE_SIZE)
+
+                if is_valid_move(game_board, column):
+                    row = get_next_open_row(game_board, column)
+                    drop_piece(game_board, row, column, 1)
+
+                    if find_win(game_board, 1):
+                        game_over = True
+
+            else:
+                posx = event.pos[0]
+                column = math.floor(posx // SQUARE_SIZE)
+                if is_valid_move(game_board, column):
+                    row = get_next_open_row(game_board, column)
+                    drop_piece(game_board, row, column, 2)
+
+                    if find_win(game_board, 2):
+                        game_over = True
+
+            print(np.flip(game_board, 0))
+            draw_board(game_board)
+
+            turn += 1
+            turn = turn % 2
